@@ -32,8 +32,8 @@ export default function Login() {
       localStorage.setItem("token", res.data.token)
       localStorage.setItem("user", JSON.stringify(res.data.user))
 
-      // redirect to home
-      navigate("/")
+      // redirect to home (like <a href="/">)
+      window.location.href = "/"
 
     } catch (err) {
 

@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
 import {
   User,
-  LayoutDashboard,
   LogOut,
   Settings,
   Menu,
@@ -18,6 +16,35 @@ function Navbar() {
 
   const dropdownRef = useRef();
 
+  const navItems = [
+    {
+      name: "Home",
+      path: "/"
+    },
+    {
+      name: "Explore",
+      path: "/explore"
+    }
+  ];
+
+  const userItems = [
+    {
+      name: "Profile",
+      path: "/profile",
+      icon: <User size={18} />
+    },
+    {
+      name: "SetuLabs",
+      path: "/setu-labs",
+      icon: <Book size={18} />
+    },
+    {
+      name: "Settings",
+      path: "/settings",
+      icon: <Settings size={18} />
+    }
+  ];
+
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
 
@@ -26,7 +53,6 @@ function Navbar() {
     }
   }, []);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
 
     const handleClickOutside = (event) => {
@@ -53,17 +79,30 @@ function Navbar() {
   };
 
   return (
-    <header className="w-full bg-white border-b border-gray-300">
-      <div className="max-w-7xl mx-auto px-8 h-20 flex items-center justify-between">
+    <header className="w-full bg-white border-b border-gray-200 sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-8 h-16 flex items-center justify-between">
 
         {/* Logo */}
-        <Link to="/" className="text-2xl font-bold">
+        <a
+          href="/"
+          className="text-xl font-bold text-gray-900 hover:text-black transition"
+        >
           DevSetu
-        </Link>
+        </a>
 
         {/* Desktop Nav */}
-        <nav className="hidden md:flex gap-10">
-          <Link to="/explore">Explore</Link>
+        <nav className="hidden md:flex gap-8 text-gray-600 font-medium">
+
+          {navItems.map((item, index) => (
+            <a
+              key={index}
+              href={item.path}
+              className="hover:text-black transition"
+            >
+              {item.name}
+            </a>
+          ))}
+
         </nav>
 
         {/* Right Side */}
@@ -71,14 +110,19 @@ function Navbar() {
 
           {!user ? (
             <>
-              <Link to="/login">Sign in</Link>
+              <a
+                href="/login"
+                className="text-gray-600 hover:text-black transition"
+              >
+                Sign in
+              </a>
 
-              <Link
-                to="/signup"
-                className="border border-black px-4 py-2 rounded-md hover:bg-black hover:text-white"
+              <a
+                href="/signup"
+                className="border border-gray-300 px-4 py-2 rounded-md hover:bg-black hover:text-white transition"
               >
                 Sign up
-              </Link>
+              </a>
             </>
           ) : (
             <div className="relative" ref={dropdownRef}>
@@ -86,7 +130,7 @@ function Navbar() {
               {/* Profile Button */}
               <button
                 onClick={() => setDropdown(!dropdown)}
-                className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center"
+                className="w-9 h-9 cursor-pointer rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition"
               >
                 {user?.name
                   ? user.name.charAt(0).toUpperCase()
@@ -95,47 +139,26 @@ function Navbar() {
 
               {/* Dropdown */}
               {dropdown && (
-                <div className="absolute right-0 mt-3 w-56 bg-white border rounded-lg shadow-lg py-2">
+                <div className="absolute right-0 mt-3 w-56 bg-white border border-gray-200 rounded-lg shadow-lg py-2">
 
                   <div className="px-4 py-2 text-sm text-gray-500 border-b">
                     {user?.name}
                   </div>
 
-                  <Link
-                    to="/profile"
-                    className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100"
-                  >
-                    <User size={18} />
-                    Profile
-                  </Link>
-
-                  <Link
-                    to="/repos"
-                    className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100"
-                  >
-                    <Book size={18} />
-                    Repositories
-                  </Link>
-
-                  <Link
-                    to="/dashboard"
-                    className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100"
-                  >
-                    <LayoutDashboard size={18} />
-                    Dashboard
-                  </Link>
-
-                  <Link
-                    to="/settings"
-                    className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100"
-                  >
-                    <Settings size={18} />
-                    Settings
-                  </Link>
+                  {userItems.map((item, index) => (
+                    <a
+                      key={index}
+                      href={item.path}
+                      className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-100 transition"
+                    >
+                      {item.icon}
+                      {item.name}
+                    </a>
+                  ))}
 
                   <button
                     onClick={logout}
-                    className="flex w-full items-center gap-3 px-4 py-2 hover:bg-red-50 text-red-500"
+                    className="flex w-full items-center gap-3 px-4 py-2 text-red-500 hover:bg-red-50 transition"
                   >
                     <LogOut size={18} />
                     Logout
@@ -152,7 +175,7 @@ function Navbar() {
         {/* Mobile Button */}
         <button
           onClick={() => setOpen(!open)}
-          className="md:hidden"
+          className="md:hidden text-gray-700"
         >
           {open ? <X /> : <Menu />}
         </button>
@@ -161,19 +184,30 @@ function Navbar() {
 
       {/* Mobile Menu */}
       {open && (
-        <div className="md:hidden border-t px-8 py-6 flex flex-col gap-5">
+        <div className="md:hidden border-t border-gray-200 px-8 py-6 flex flex-col gap-4 bg-white">
 
-          <Link to="/explore">Explore</Link>
+          {navItems.map((item, index) => (
+            <a
+              key={index}
+              href={item.path}
+              className="text-gray-700 hover:text-black"
+            >
+              {item.name}
+            </a>
+          ))}
 
           {!user ? (
             <>
-              <Link to="/login">Sign in</Link>
-              <Link to="/signup">Sign up</Link>
+              <a href="/login">Sign in</a>
+              <a href="/signup">Sign up</a>
             </>
           ) : (
             <>
-              <Link to="/profile">Profile</Link>
-              <Link to="/repos">Repositories</Link>
+              {userItems.map((item, index) => (
+                <a key={index} href={item.path}>
+                  {item.name}
+                </a>
+              ))}
 
               <button
                 onClick={logout}
